@@ -5,6 +5,7 @@ namespace Pontifex\Rest\Api\Fields;
 use Pontifex\Rest\Api\Fields\Exceptions\IncorrectFieldException;
 use Pontifex\Rest\Api\Fields\Exceptions\NoFieldsException;
 use Pontifex\Rest\Api\IApi;
+use Symfony\Component\HttpFoundation\InputBag;
 
 trait Fields
 {
@@ -13,12 +14,12 @@ trait Fields
      * @throws NoFieldsException
      */
     public function getFields(
-        array $inputFields,
+        InputBag $query,
         string $type,
         array $allowedFieldsForType
     ): array {
-        $inputFieldsForType = (isset($inputFields[$type]))
-            ? explode(IApi::FIELDS_SEPARATOR, $inputFields[$type])
+        $inputFieldsForType = ($query->has($type))
+            ? explode(IApi::FIELDS_SEPARATOR, $query->get($type))
             : [];
 
         return [

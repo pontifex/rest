@@ -4,29 +4,33 @@ namespace Pontifex\Rest\Api\Pagination;
 
 use Pontifex\Rest\Api\Pagination\Exceptions\IncorrectPageNumberException;
 use Pontifex\Rest\Api\Pagination\Exceptions\IncorrectPageSizeException;
+use Symfony\Component\HttpFoundation\InputBag;
 
 trait Pagination
 {
     /**
      * @throws IncorrectPageNumberException
      * @throws IncorrectPageSizeException
+     * @psalm-return array{0:positive-int, 1:positive-int}
      */
     public function extractPaginationParams(
-        array $pageArr,
+        InputBag $query,
         int $defaultNumber,
         int $defaultSize
     ): array {
-        $pageNumber = (isset($pageArr['number']))
-            ? (int) $pageArr['number']
-            : $defaultNumber;
+        $pageNumber = (int) $query->get(
+            'page.number',
+            $defaultNumber
+        );
 
         if ($pageNumber <= 0) {
             throw new IncorrectPageNumberException();
         }
 
-        $pageSize = (isset($pageArr['size']))
-            ? (int) $pageArr['size']
-            : $defaultSize;
+        $pageSize = (int) $query->get(
+            'page.size',
+            $defaultSize
+        );
 
         if ($pageSize <= 0) {
             throw new IncorrectPageSizeException();
