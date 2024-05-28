@@ -18,8 +18,10 @@ trait Fields
         string $type,
         array $allowedFieldsForType
     ): array {
-        $inputFieldsForType = ($query->has($type))
-            ? explode(IApi::FIELDS_SEPARATOR, $query->get($type))
+        $fields = $query->all(IApi::FIELDS_PARAM, []);
+
+        $inputFieldsForType = ($fields[$type])
+            ? explode(IApi::FIELDS_SEPARATOR, $fields[$type])
             : [];
 
         return [
